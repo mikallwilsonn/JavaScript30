@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mouse Shadow</title>
+  <link href="https://fonts.googleapis.com/css?family=Trade+Winds" rel="stylesheet">
+</head>
+<body>
+
+<div class="hero">
+  <h1 contenteditable>🔥 THIS IS CRAZY! &#x1F92F; </h1>
+</div>
+
+<style>
+html {
+  color:black;
+  font-family: 'Trade Winds', cursive;
+  font-size:2em;
+}
+
+body {
+  margin: 0;
+  height:100%;
+  width:100%;
+  overflow:hidden;
+}
+
+.hero {
+  min-height: 100vh;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  color:black;
+}
+
+h1 {
+  text-shadow: 10px 10px 0 rgba(0,0,0,1);
+  font-size: 100px;
+}
+</style>
+
+<script>
+const warning = confirm('WARNING! \n \n This demo has a lot of quicly changing colors and transperancy. \n \n If you are susceptible photosensitive seizures from flashing lights and patterns you may wish to click away from this demo. ');
+if ( warning === false) {
+  history.back();
+}
+
+const hero = document.querySelector( '.hero' );
+const text = hero.querySelector( 'h1' );
+const body = document.querySelector( 'body' );
+const walk = 150;
+
+function shadow( e ) {
+  const width = hero.offsetWidth;
+  const height = hero.offsetHeight;
+  let  { offsetX: x, offsetY: y } = e;
+  if ( this !== e.target ) {
+    x = x + e.target.offsetLeft;
+    y = y + e.offsetTop;
+  }
+  const xWalk = Math.round(( x / width * walk ) - ( walk / 2 ));
+  const yWalk = Math.round(( y / width * walk ) - ( walk / 2 ));
+
+  let r = Math.floor(Math.random() * 255) + 1 ; 
+  let g = Math.floor(Math.random() * 255) + 1 ; 
+  let b = Math.floor(Math.random() * 255) + 1 ; 
+  let a = Math.floor(Math.random() + 1); 
+
+  text.style.textShadow = `
+    ${xWalk}px ${yWalk}px 0 rgba(${r}, ${g}, ${b}, ${a}),
+    ${xWalk * -1}px ${yWalk}px 0 rgba(${r}, ${g}, ${b}, ${a}),
+    ${yWalk}px ${xWalk * -1}px 0 rgba(${r}, ${g}, ${b}, ${a}),
+    ${yWalk * -1}px ${xWalk}px 0 rgba(${r}, ${g}, ${b}, ${a})
+  `;
+  
+
+}
+
+function changeBG() {
+  let r = Math.floor(Math.random() * 255) + 1 ; 
+  let g = Math.floor(Math.random() * 255) + 1 ; 
+  let b = Math.floor(Math.random() * 255) + 1 ; 
+  let a = Math.floor(Math.random() + 1); 
+  body.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
+function debounce( func, wait = 30, immediate = true ) {
+  var timeout;
+  return function() {
+    var context = this, args = arguments;
+    var later = function() {
+      timeout = null;
+      if ( !immediate ) func.apply( context, args );
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout( timeout );
+    timeout = setTimeout( later, wait );
+    if ( callNow ) func.apply( context, args );
+  };
+}
+
+hero.addEventListener( 'mousemove', shadow );
+body.addEventListener( 'mousemove', debounce( changeBG ));
+document.onload = warning;
+
+</script>
+</body>
+</html>
